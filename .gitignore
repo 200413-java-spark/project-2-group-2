@@ -1,3 +1,10 @@
 .settings/
 .vscode/
+<<<<<<< HEAD
 target/
+=======
+target*
+.classpath
+.project
+
+>>>>>>> 2788c193c55874e02133b1153cfc5d246f034850
