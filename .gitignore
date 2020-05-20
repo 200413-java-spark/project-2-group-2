@@ -1,8 +1,16 @@
 .settings/
 .vscode/
+<<<<<<< HEAD
 target/
 target*
 .classpath
 .project
 
 conf.xml
+=======
+*/target/**
+.classpath
+.project
+
+
+>>>>>>> jeffsBranch
