@@ -7,12 +7,6 @@ import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
-
-
-/**
- * Hello world!
- *
- */
 public class App {
     public static void main(String[] args) throws AnalysisException {
 
