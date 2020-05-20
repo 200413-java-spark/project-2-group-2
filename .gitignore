@@ -1,6 +1,8 @@
 .settings/
 .vscode/
+target/
 target*
 .classpath
 .project
 
+conf.xml
