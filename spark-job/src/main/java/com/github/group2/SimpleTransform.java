@@ -26,4 +26,15 @@ public class SimpleTransform {
   void sqlstuff() {
     spark.sql("SELECT hotel FROM bookings").show(10);
   }
+
+  void sql_peopleType()
+  {
+    
+    spark.sql("SELECT adults,children,babies,COUNT(*) as Total, ROUND(COUNT(*)*100/"+ds.count()+",3) as Percentage from bookings where group by adults,children,babies ORDER BY Total DESC").show(100);
+  }
+  void sql_countryRoom()
+  {
+    spark.sql("SELECT country,reserved_room_type,COUNT(*) as Total,ROUND(COUNT(*)*100/"+ds.count()+",3) as Percentage from bookings group by country,reserved_room_type ORDER BY country,reserved_room_type ASC").show(800);
+  }
+
 }
