@@ -21,28 +21,9 @@ public class App {
         Dataset<Row> ds = spark.read().option("inferSchema", true).option("header", true)
                 .csv("s3a://revature-200413-project2-group2/hotel_bookings.csv").cache();
 
-        long num=ds.count();
-        JavaPairRDD <String,Integer> pair=method_1(ds);
-        for(Tuple2<String,Integer> s:pair.collect())
-        {
-        	System.out.printf(s+"  -> "+"%.4f",(s._2*100.0/num));
-        	System.out.println("%");
-        }
+      
         
     }
     
-    public static JavaPairRDD<String,Integer> method_1(Dataset<Row> data)
-	{
-    	JavaRDD<Row> temp=data.javaRDD();
-		JavaPairRDD<String,Integer> result= temp.mapToPair(new PairFunction<Row,String,Integer>()
-				{
-					@Override
-					public Tuple2<String,Integer> call (Row input) throws Exception{
-						return new Tuple2<String,Integer>((input.get(9)+", "+input.get(10)+", "+input.get(11)),1);
-					}
-				}
-				);
-		result=result.reduceByKey((x,y)->x+y);
-		return result;
-	}
+    
 }
