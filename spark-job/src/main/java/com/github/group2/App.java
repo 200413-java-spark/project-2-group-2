@@ -5,5 +5,8 @@ public class App {
         SimpleTransform simple = new SimpleTransform();
         simple.schema();
         simple.sqlstuff();
+
+        Moo moo = new Moo();
+        moo.mooAnalyze();
     }
 }
