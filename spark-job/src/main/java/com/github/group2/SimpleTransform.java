@@ -41,11 +41,21 @@ public class SimpleTransform {
   }
 
   void compareAvgAdrOfRoomType() {
+    // Correlation between adr and room type
     spark.sql("SELECT assigned_room_type, AVG(adr) FROM bookings group by assigned_room_type").show();
   }
   
+  void compareAvgAdrofMonth() {
+    // Correlation between adr and month
+    spark.sql("SELECT AVG(adr), arrival_date_month FROM bookings group by arrival_date_month").show();
+    
+  }
 
-
+  void compareAvgAdrofHotel() {
+    // Correlation between adr and hotel
+    spark.sql("SELECT AVG(adr), hotel FROM bookings group by hotel").show();
+    
+  }
 
 
 

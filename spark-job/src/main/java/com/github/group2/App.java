@@ -16,6 +16,8 @@ public class App {
         simple.compareHotelTypeAndMonth();
         simple.compareAvgLeadTimeOfHotelType();
         simple.compareAvgAdrOfRoomType();
+        simple.compareAvgAdrofMonth();
+        simple.compareAvgAdrofHotel();
     }
 
 
