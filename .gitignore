@@ -4,3 +4,5 @@ target/
 .classpath
 .project
 conf.xml
+db-service/bin/
+spark-job/bin/
