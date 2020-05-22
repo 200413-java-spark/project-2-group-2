@@ -49,13 +49,13 @@ public class SimpleTransform {
 				.show(200);
 	}
 
-	void sql_topTenCountry() {
-		spark.sql(
+	public Dataset<Row> sql_topTenCountry() {
+		return spark.sql(
 				"SELECT country as Country,ROUND(SUM(adr),2) as Total_Revenue, "
 				+ "Count(country) as Count, "
 				+ "ROUND(COUNT(country)/"+ ds.count() + " * 100,2) as Percentage "
 				+ "FROM bookings GROUP BY country ORDER BY Total_Revenue DESC")
-				.show(10);
+				;
 
 	}
 	
