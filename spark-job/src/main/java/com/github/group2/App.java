@@ -12,7 +12,8 @@ public class App {
     public static void main(String[] args) {
         SimpleTransform simple = new SimpleTransform();
 
-         simple.schema();
+
+        simple.schema();
 		simple.sqlstuff();
     	simple.sql_peopleType();
         simple.sql_countryRoom();
@@ -24,6 +25,10 @@ public class App {
         simple.compareAvgAdrOfRoomType();
         simple.compareAvgAdrofMonth();
         simple.compareAvgAdrofHotel();
+
+        Moo moo = new Moo();
+        moo.mooAnalyze();
+
     }
 
 
