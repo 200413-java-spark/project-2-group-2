@@ -51,11 +51,21 @@ public class SimpleTransform {
 
 	void sql_topTenCountry() {
 		spark.sql(
-				"SELECT country as Country,ROUND(SUM(adr),2) as Total_Revenue FROM bookings GROUP BY country ORDER BY Total_Revenue DESC")
+				"SELECT country as Country,ROUND(SUM(adr),2) as Total_Revenue, "
+				+ "Count(country) as Count, "
+				+ "ROUND(COUNT(country)/"+ ds.count() + " * 100,2) as Percentage "
+				+ "FROM bookings GROUP BY country ORDER BY Total_Revenue DESC")
 				.show(10);
 
 	}
-
+	
+	void summarizeCountries() {
+		// countries
+		ds.groupBy("country").count()
+				.withColumn("percentage", format_number(col("count").divide(ds.count()).multiply(100), 2))
+				.sort(desc("count")).show();
+	}
+	
 	void compareHotelTypeAndMonth() {
 		// Correlation between hotel_type and arrival_date_month
 		spark.sql(
@@ -75,15 +85,9 @@ public class SimpleTransform {
 		spark.sql("SELECT assigned_room_type, AVG(adr) FROM bookings group by assigned_room_type").show();
 	}
 
-	void compareAvgAdrofMonth() {
-		// Correlation between adr and month
-		spark.sql("SELECT AVG(adr), arrival_date_month FROM bookings group by arrival_date_month").show();
-
-	}
-
 	void compareAvgAdrofHotel() {
 		// Correlation between adr and hotel
-		spark.sql("SELECT AVG(adr), hotel FROM bookings group by hotel").show();
+		spark.sql("SELECT hotel, AVG(adr) FROM bookings group by hotel").show();
 
 	}
 
@@ -97,17 +101,11 @@ public class SimpleTransform {
 				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).show(24);
 	}
 
-	void summarizeCountries() {
-		// countries
-		ds.groupBy("country").count()
-				.withColumn("percentage", format_number(col("count").divide(ds.count()).multiply(100), 2))
-				.sort(desc("count")).show();
-	}
+
 
 	void cancellationAnalyses() {
 		// cancellation
 		ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
-		ds.groupBy("hotel").avg("adr").show();
 		ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
 	}
 
