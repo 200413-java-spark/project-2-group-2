@@ -31,16 +31,18 @@ public class SimpleTransform {
 	}
 
 	void sql_peopleType() {
-		spark.sql("SELECT adults as Adults,children as Children,babies as Babies,COUNT(*) as Total, ROUND(COUNT(*)*100/"
-				+ ds.count()
-				+ ",3) as Percentage from bookings where group by adults,children,babies ORDER BY Total DESC")
+		spark.sql(
+				"SELECT adults as Adults,children as Children,babies as Babies,COUNT(*) as Total, ROUND(COUNT(*)*100/"
+						+ ds.count()
+						+ ",3) as Percentage from bookings where group by adults,children,babies ORDER BY Total DESC")
 				.show(100);
 	}
 
 	void sql_countryRoom() {
-		spark.sql("SELECT country as Country,reserved_room_type as Room_Type,COUNT(*) as Total,ROUND(COUNT(*)*100/"
-				+ ds.count()
-				+ ",3) as Percentage from bookings group by country,reserved_room_type ORDER BY country,reserved_room_type ASC")
+		spark.sql(
+				"SELECT country as Country,reserved_room_type as Room_Type,COUNT(*) as Total,ROUND(COUNT(*)*100/"
+						+ ds.count()
+						+ ",3) as Percentage from bookings group by country,reserved_room_type ORDER BY country,reserved_room_type ASC")
 				.show(800);
 	}
 
@@ -51,22 +53,20 @@ public class SimpleTransform {
 	}
 
 	void sql_topTenCountry() {
-		spark.sql(
-				"SELECT country as Country,ROUND(SUM(adr),2) as Total_Revenue, "
-				+ "Count(country) as Count, "
-				+ "ROUND(COUNT(country)/"+ ds.count() + " * 100,2) as Percentage "
-				+ "FROM bookings GROUP BY country ORDER BY Total_Revenue DESC")
+		spark.sql("SELECT country as Country,ROUND(SUM(adr),2) as Total_Revenue, "
+				+ "Count(country) as Count, " + "ROUND(COUNT(country)/" + ds.count()
+				+ " * 100,2) as Percentage " + "FROM bookings GROUP BY country ORDER BY Total_Revenue DESC")
 				.show(10);
 
 	}
-	
+
 	void summarizeCountries() {
 		// countries
 		ds.groupBy("country").count()
 				.withColumn("percentage", format_number(col("count").divide(ds.count()).multiply(100), 2))
 				.sort(desc("count")).show();
 	}
-	
+
 	void compareHotelTypeAndMonth() {
 		// Correlation between hotel_type and arrival_date_month
 		spark.sql(
@@ -83,7 +83,8 @@ public class SimpleTransform {
 
 	void compareAvgAdrOfRoomType() {
 		// Correlation between adr and room type
-		spark.sql("SELECT assigned_room_type, AVG(adr) FROM bookings group by assigned_room_type").show();
+		spark.sql("SELECT assigned_room_type, AVG(adr) FROM bookings group by assigned_room_type")
+				.show();
 	}
 
 	void compareAvgAdrofHotel() {
@@ -99,26 +100,37 @@ public class SimpleTransform {
 		ds.groupBy("arrival_date_month", "hotel").agg(count(lit(1)).alias("count"), avg("adr"))
 				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("hotel")).show(24);
 		ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
-				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).show(24);
+				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled"))
+				.show(24);
 	}
 
 	void writeMonthlyAnalyses() {
 		ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
-				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).coalesce(1)
-				.write().format("csv").option("header", true)
+				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled"))
+				.coalesce(1).write().format("csv").option("header", true)
 				.save("s3a://revature-200413-project2-group2/results/");
 	}
 
 	void cancellationAnalyses() {
 		// cancellation
-		ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
-		ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
+		ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr"))
+				.show();
+		ds.groupBy("is_canceled", "hotel")
+				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
+	}
+
+	void writeCancellationAnalyses() {
+		ds.groupBy("is_canceled", "hotel")
+				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
+				.format("csv").option("header", true)
+				.save("s3a://revature-200413-project2-group2/results4/");
 	}
 
 	void writeCancellationAnalysis() {
-		ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1)
-		.write().format("csv").option("header", true)
-		.save("s3a://revature-200413-project2-group2/results/");
+		ds.groupBy("is_canceled", "hotel")
+				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
+				.format("csv").option("header", true)
+				.save("s3a://revature-200413-project2-group2/results/");
 	}
 
 	void countRepeatedGuestVSHotel() {
@@ -158,18 +170,20 @@ public class SimpleTransform {
 		spark.sql("Select arrival_date_day_of_month, "
 				+ "Count(case when assigned_room_type == reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsAssigned, "
 				+ "Count(case when assigned_room_type <> reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsNotAssigned "
-				+ "From bookings Group by arrival_date_day_of_month " + "Order By arrival_date_day_of_month ASC")
-				.show(31);
+				+ "From bookings Group by arrival_date_day_of_month "
+				+ "Order By arrival_date_day_of_month ASC").show(31);
 	}
 
 	void writeCountReservedIsAssignedVSDay() {
 		// count of where room reserved was the room assigned based on day of month
-		//spark.sparkContext().hadoopConfiguration().set("mapreduce.fileoutputcommitter.algorithm.version", "2");
+		// spark.sparkContext().hadoopConfiguration().set("mapreduce.fileoutputcommitter.algorithm.version",
+		// "2");
 		spark.sql("Select arrival_date_day_of_month, "
 				+ "Count(case when assigned_room_type == reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsAssigned, "
 				+ "Count(case when assigned_room_type <> reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsNotAssigned "
-				+ "From bookings Group by arrival_date_day_of_month " + "Order By arrival_date_day_of_month ASC").coalesce(1).write().format("csv").option("header", true)
-				.save("s3a://revature-200413-project2-group2/results/test.csv");
+				+ "From bookings Group by arrival_date_day_of_month "
+				+ "Order By arrival_date_day_of_month ASC").coalesce(1).write().format("csv")
+				.option("header", true).save("s3a://revature-200413-project2-group2/results/test.csv");
 	}
 }
 
