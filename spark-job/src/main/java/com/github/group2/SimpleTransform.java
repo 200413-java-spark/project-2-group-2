@@ -1,7 +1,8 @@
 package com.github.group2;
 
 import static org.apache.spark.sql.functions.*;
-
+import java.io.FileWriter;
+import java.util.List;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -101,12 +102,23 @@ public class SimpleTransform {
 				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).show(24);
 	}
 
-
+	void writeMonthlyAnalyses() {
+		ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
+				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).coalesce(1)
+				.write().format("csv").option("header", true)
+				.save("s3a://revature-200413-project2-group2/results/");
+	}
 
 	void cancellationAnalyses() {
 		// cancellation
 		ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
 		ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
+	}
+
+	void writeCancellationAnalysis() {
+		ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1)
+		.write().format("csv").option("header", true)
+		.save("s3a://revature-200413-project2-group2/results/");
 	}
 
 	void countRepeatedGuestVSHotel() {
@@ -150,4 +162,14 @@ public class SimpleTransform {
 				.show(31);
 	}
 
+	void writeCountReservedIsAssignedVSDay() {
+		// count of where room reserved was the room assigned based on day of month
+		//spark.sparkContext().hadoopConfiguration().set("mapreduce.fileoutputcommitter.algorithm.version", "2");
+		spark.sql("Select arrival_date_day_of_month, "
+				+ "Count(case when assigned_room_type == reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsAssigned, "
+				+ "Count(case when assigned_room_type <> reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsNotAssigned "
+				+ "From bookings Group by arrival_date_day_of_month " + "Order By arrival_date_day_of_month ASC").coalesce(1).write().format("csv").option("header", true)
+				.save("s3a://revature-200413-project2-group2/results/test.csv");
+	}
 }
+

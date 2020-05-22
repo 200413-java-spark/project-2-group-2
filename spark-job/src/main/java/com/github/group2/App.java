@@ -4,7 +4,7 @@ public class App {
 	public static void main(String[] args) {
 		SimpleTransform simple = new SimpleTransform();
 
-		simple.schema();
+		/*simple.schema();
 
 		simple.sqlstuff();
 		simple.sql_peopleType();
@@ -25,6 +25,10 @@ public class App {
 		simple.countReservedIsAssignedVSRoomType();
 		simple.countReservedIsAssignedVSMonth();
 		simple.countReservedIsAssignedVSYear();
-		simple.countReservedIsAssignedVSDay();
+		simple.countReservedIsAssignedVSDay();*/
+
+		simple.writeMonthlyAnalyses();
+		simple.writeCancellationAnalysis();
+		simple.writeCountReservedIsAssignedVSDay();
 	}
 }
