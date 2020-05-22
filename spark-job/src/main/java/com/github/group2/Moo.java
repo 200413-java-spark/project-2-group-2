@@ -12,19 +12,23 @@ import org.apache.spark.sql.Row;
 public class Moo {
   public static void main(String[] args) throws AnalysisException {
 
-    SparkSession spark =
+    /*SparkSession spark =
         new SparkSession.Builder().appName("EZ APP").master("local[*]").getOrCreate();
     spark.sparkContext().setLogLevel("WARN");
     spark.sparkContext().hadoopConfiguration().addResource("conf.xml");
 
     Dataset<Row> ds = spark.read().option("inferSchema", true).option("header", true)
         .csv("s3a://revature-200413-project2-group2/hotel_bookings.csv").cache();
-    /*
+    
      * ds.printSchema(); ds.select("reservation_status_date").show(5); ds = ds.withColumn("ID",
      * functions.monotonically_increasing_id()); ds.createTempView("bookings");
      * spark.sql("SELECT ID, hotel, adults, children, reservation_status_date FROM bookings").
      * show(10);
      */
+
+    SparkSession spark = SessionCreator.getInstance().getSession();
+    Dataset<Row> ds = DatasetCreator.getInstance(spark).getDataset();
+
     System.out.println(Arrays.asList(ds.columns()).stream().collect(Collectors.joining(", ")));
 
     // some stats
