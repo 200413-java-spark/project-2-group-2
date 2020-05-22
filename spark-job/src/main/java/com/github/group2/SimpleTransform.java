@@ -151,4 +151,5 @@ public class SimpleTransform {
 				+ "From bookings Group by arrival_date_day_of_month " + "Order By arrival_date_day_of_month ASC")
 				.show(31);
 	}
+
 }
