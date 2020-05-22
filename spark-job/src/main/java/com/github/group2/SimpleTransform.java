@@ -57,9 +57,9 @@ public class SimpleTransform {
     ds.groupBy("arrival_date_month").agg(count(lit(1)).alias("count"), avg("adr"))
         .sort(month(to_date(ds.col("arrival_date_month"), "MMMMM"))).show(24);
     ds.groupBy("arrival_date_month", "hotel").agg(count(lit(1)).alias("count"), avg("adr"))
-        .sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), "hotel").show(24);
+        .sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("hotel")).show(24);
     ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
-        .sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), "is_canceled").show(24);
+        .sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).show(24);
   }
 
   void summarizeCountries() {
