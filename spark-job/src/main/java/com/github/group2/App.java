@@ -4,6 +4,11 @@ public class App {
     public static void main(String[] args) {
         SimpleTransform simple = new SimpleTransform();
         simple.schema();
-        simple.sqlstuff();
+        //simple.sqlstuff();
+        simple.countRepeatedGuestVSHotel();
+        simple.countReservedIsAssignedVSRoomType();
+        simple.countReservedIsAssignedVSMonth();
+        simple.countReservedIsAssignedVSYear();
+        simple.countReservedIsAssignedVSDay();
     }
 }
