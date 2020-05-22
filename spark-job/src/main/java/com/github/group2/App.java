@@ -26,9 +26,9 @@ public class App {
         simple.compareAvgAdrofMonth();
         simple.compareAvgAdrofHotel();
 
-        Moo moo = new Moo();
-        moo.mooAnalyze();
-
+        simple.monthlyAnalyses();
+        simple.summarizeCountries();
+        simple.cancellationAnalyses();
     }
 
 
