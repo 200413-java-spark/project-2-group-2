@@ -2,10 +2,17 @@ package com.github.group2;
 
 import static org.apache.spark.sql.functions.*;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
 
 public class SimpleTransform {
 	private SparkSession spark;
@@ -120,17 +127,28 @@ public class SimpleTransform {
 	}
 
 	void writeCancellationAnalyses() {
+		// URI bucket = URI.create("s3a://")
 		ds.groupBy("is_canceled", "hotel")
 				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
-				.format("csv").option("header", true)
-				.save("s3a://revature-200413-project2-group2/results4/");
-	}
+				.format("csv").option("header", true).mode("overwrite")
+				// .save("s3a://home/jimey/revature/project2/results/renametest/");
+				.save("s3a://revature-200413-project2-group2/results/renametest/");
 
-	void writeCancellationAnalysis() {
-		ds.groupBy("is_canceled", "hotel")
-				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
-				.format("csv").option("header", true)
-				.save("s3a://revature-200413-project2-group2/results/");
+		try {
+			FileSystem fs = FileSystem.get(spark.sparkContext().hadoopConfiguration());
+			RemoteIterator<LocatedFileStatus> status = fs.listFiles(new Path("s3a://revature-200413-project2-group2/results/renametest/"), true);
+			String partPath = "";
+			while(status.hasNext()) {
+				if (status.next().getPath().getName().contains("part"))
+					partPath = status.next().getPath().getName();
+			}
+			fs.rename(
+					//new Path(new URI("s3a://revature-200413-project2-group2/results/renametest/part*.csv")),
+					new Path(partPath),
+					new Path(new URI("s3a://revature-200413-project2-group2/results/renametest/test.csv")));
+		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	void countRepeatedGuestVSHotel() {
