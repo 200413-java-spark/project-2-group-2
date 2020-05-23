@@ -135,12 +135,17 @@ public class SimpleTransform {
 				.save("s3a://revature-200413-project2-group2/results/renametest/");
 
 		try {
-			FileSystem fs = FileSystem.get(spark.sparkContext().hadoopConfiguration());
+			FileSystem fs = FileSystem.get(new URI("s3a://revature-200413-project2-group2/"),spark.sparkContext().hadoopConfiguration());
+			// FileSystem fs = FileSystem.get(spark.sparkContext().hadoopConfiguration());
 			RemoteIterator<LocatedFileStatus> status = fs.listFiles(new Path("s3a://revature-200413-project2-group2/results/renametest/"), true);
 			String partPath = "";
 			while(status.hasNext()) {
-				if (status.next().getPath().getName().contains("part"))
-					partPath = status.next().getPath().getName();
+				String current = status.next().getPath().getName();
+				System.out.println(current);
+				if (current.contains("part")) {
+					partPath = current;
+					System.out.println(partPath);
+				}
 			}
 			fs.rename(
 					//new Path(new URI("s3a://revature-200413-project2-group2/results/renametest/part*.csv")),
