@@ -27,8 +27,8 @@ public class App {
 		simple.countReservedIsAssignedVSYear();
 		simple.countReservedIsAssignedVSDay();*/
 
-		simple.writeMonthlyAnalyses();
-		simple.writeCancellationAnalysis();
+		//simple.writeMonthlyAnalyses();
+		//simple.writeCancellationAnalysis();
 		simple.writeCancellationAnalyses();
 	}
 }
