@@ -18,18 +18,18 @@ public class App {
 		simple.compareAvgAdrofHotel();
 
 		simple.monthlyAnalyses();
-		simple.summarizeCountries();
+		simple.summarizeCountries();*/
 		simple.cancellationAnalyses();
-
+/*
 		simple.countRepeatedGuestVSHotel();
 		simple.countReservedIsAssignedVSRoomType();
 		simple.countReservedIsAssignedVSMonth();
 		simple.countReservedIsAssignedVSYear();
-		simple.countReservedIsAssignedVSDay();*/
+		simple.countReservedIsAssignedVSDay();
 
-		/*simple.writeMonthlyAnalyses();
+		simple.writeMonthlyAnalyses();
 		simple.writeCancellationAnalysis();
 		simple.writeCountReservedIsAssignedVSDay();*/
-		simple.writeCancellationAnalyses();
+		
 	}
 }

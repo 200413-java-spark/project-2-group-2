@@ -7,6 +7,9 @@ import java.util.List;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.apache.spark.sql.SparkSession;
+
+import javassist.runtime.Inner;
+
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.hadoop.fs.FileStatus;
@@ -18,6 +21,7 @@ import org.apache.hadoop.fs.RemoteIterator;
 public class SimpleTransform {
 	private SparkSession spark;
 	private Dataset<Row> ds;
+	private String savePath = "s3a://revature-200413-project2-group2/JeffsResults/";
 
 	public SimpleTransform() {
 		spark = SessionCreator.getInstance().getSession();
@@ -124,31 +128,13 @@ public class SimpleTransform {
 		ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr"))
 				.show();
 		ds.groupBy("is_canceled", "hotel")
-				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).show();
-	}
-
-	void writeCancellationAnalyses() {
-		// URI bucket = URI.create("s3a://")
-		String savePath = "s3a://revature-200413-project2-group2/results/renametest/";
-
-		ds.groupBy("is_canceled", "hotel")
 				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
 				.format("csv").option("header", true).mode("overwrite")
-				// .save("s3a://home/jimey/revature/project2/results/renametest/");
-				.save(savePath);
-
-		try {
-			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
-
-			String partPath = fs.globStatus(new Path(savePath + "part*.csv"))[0].getPath().toString();
-			System.out.println(partPath);
-			fs.rename(new Path(partPath), new Path(savePath + "TEST.csv"));
-			fs.deleteOnExit(new Path(savePath + "_SUCCESS"));
-		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
-			e.printStackTrace();
-		}
+				.save(this.savePath);
+		
+		rename(this.savePath,Thread.currentThread().getStackTrace()[1].getMethodName());
 	}
-
+	
 	void countRepeatedGuestVSHotel() {
 		// Count of repeated guests vs type of hotel
 		spark.sql("Select hotel, " + "count(*) AS total, "
@@ -200,6 +186,19 @@ public class SimpleTransform {
 				+ "From bookings Group by arrival_date_day_of_month "
 				+ "Order By arrival_date_day_of_month ASC").coalesce(1).write().format("csv")
 				.option("header", true).save("s3a://revature-200413-project2-group2/results/test.csv");
+	}
+	
+	void rename(String savePath, String name) {
+		try {
+			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
+
+			String partPath = fs.globStatus(new Path(savePath + "part*.csv"))[0].getPath().toString();
+			System.out.println(partPath);
+			fs.rename(new Path(partPath), new Path(savePath + name + ".csv"));
+			fs.deleteOnExit(new Path(savePath + "_SUCCESS"));
+		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 }
 
