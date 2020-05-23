@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
@@ -138,21 +139,10 @@ public class SimpleTransform {
 
 		try {
 			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
-			// FileSystem fs = FileSystem.get(spark.sparkContext().hadoopConfiguration());
-			RemoteIterator<LocatedFileStatus> status = fs.listFiles(new Path(savePath), true);
-			String partPath = "";
-			while (status.hasNext()) {
-				String current = status.next().getPath().getName();
-				System.out.println(current);
-				if (current.contains("part")) {
-					partPath = savePath + current;
-					System.out.println(partPath);
-				}
-			}
-			fs.rename(
-					// new Path(new
-					// URI("s3a://revature-200413-project2-group2/results/renametest/part*.csv")),
-					new Path(partPath), new Path(savePath + "TEST.csv"));
+
+			String partPath = fs.globStatus(new Path(savePath + "part*.csv"))[0].getPath().toString();
+			System.out.println(partPath);
+			fs.rename(new Path(partPath), new Path(savePath + "TEST.csv"));
 			fs.deleteOnExit(new Path(savePath + "_SUCCESS"));
 		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
 			e.printStackTrace();
