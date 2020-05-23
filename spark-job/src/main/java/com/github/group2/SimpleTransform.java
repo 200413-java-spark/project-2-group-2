@@ -128,29 +128,32 @@ public class SimpleTransform {
 
 	void writeCancellationAnalyses() {
 		// URI bucket = URI.create("s3a://")
+		String savePath = "s3a://revature-200413-project2-group2/results/renametest/";
+
 		ds.groupBy("is_canceled", "hotel")
 				.agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr")).coalesce(1).write()
 				.format("csv").option("header", true).mode("overwrite")
 				// .save("s3a://home/jimey/revature/project2/results/renametest/");
-				.save("s3a://revature-200413-project2-group2/results/renametest/");
+				.save(savePath);
 
 		try {
-			FileSystem fs = FileSystem.get(new URI("s3a://revature-200413-project2-group2/"),spark.sparkContext().hadoopConfiguration());
+			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
 			// FileSystem fs = FileSystem.get(spark.sparkContext().hadoopConfiguration());
-			RemoteIterator<LocatedFileStatus> status = fs.listFiles(new Path("s3a://revature-200413-project2-group2/results/renametest/"), true);
+			RemoteIterator<LocatedFileStatus> status = fs.listFiles(new Path(savePath), true);
 			String partPath = "";
-			while(status.hasNext()) {
+			while (status.hasNext()) {
 				String current = status.next().getPath().getName();
 				System.out.println(current);
 				if (current.contains("part")) {
-					partPath = current;
+					partPath = savePath + current;
 					System.out.println(partPath);
 				}
 			}
 			fs.rename(
-					//new Path(new URI("s3a://revature-200413-project2-group2/results/renametest/part*.csv")),
-					new Path(partPath),
-					new Path(new URI("s3a://revature-200413-project2-group2/results/renametest/test.csv")));
+					// new Path(new
+					// URI("s3a://revature-200413-project2-group2/results/renametest/part*.csv")),
+					new Path(partPath), new Path(savePath + "TEST.csv"));
+			fs.deleteOnExit(new Path(savePath + "_SUCCESS"));
 		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
 			e.printStackTrace();
 		}
