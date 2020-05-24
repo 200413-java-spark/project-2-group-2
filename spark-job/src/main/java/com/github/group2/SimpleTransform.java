@@ -212,13 +212,34 @@ public class SimpleTransform {
 	
 	void rename(String savePath, String name) {
 		try {
-			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());	
+			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
+			checkDuplicate(savePath, name);		
 			String partPath = fs.globStatus(new Path(savePath + "part*.csv"))[0].getPath().toString();
 			fs.rename(new Path(partPath), new Path(savePath + name + ".csv"));
 			fs.deleteOnExit(new Path(savePath + "_SUCCESS"));
 		} catch (IOException | IllegalArgumentException | URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+	@SuppressWarnings("deprecation")
+	public void checkDuplicate(String savePath,String name)
+	{
+		try
+		{
+			FileSystem fs = FileSystem.get(new URI(savePath), spark.sparkContext().hadoopConfiguration());
+			String dup=fs.globStatus(new Path(savePath+name+".csv"))[0].getPath().toString();
+			String temp[]=dup.split(savePath);
+			if(temp[1].equals(name+".csv"))
+			{
+				fs.delete(new Path(dup));
+			}
+			
+		}
+		catch(NullPointerException| IOException | IllegalArgumentException | URISyntaxException e)
+		{
+			System.err.println(e.getMessage());
+		}
+		
 	}
 	public void display_dataset(Dataset<Row> data,int num)
 	{
