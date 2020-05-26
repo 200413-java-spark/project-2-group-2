@@ -15,7 +15,7 @@ import org.apache.hadoop.fs.Path;
 public class SimpleTransform {
 	private SparkSession spark;
 	private Dataset<Row> ds;
-	private String savePath = "s3a://revature-200413-project2-group2/Results/";
+	private String savePath = "s3a://revature-200413-project2-group2/JeffsResults/";
 
 	public SimpleTransform() {
 		spark = SessionCreator.getInstance().getSession();
