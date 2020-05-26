@@ -15,18 +15,14 @@ import org.apache.hadoop.fs.Path;
 public class SimpleTransform {
 	private SparkSession spark;
 	private Dataset<Row> ds;
-	private String savePath = "s3a://revature-200413-project2-group2/JeffsResults/";
+	private String savePath = "s3a://revature-200413-project2-group2/Results/";
 
 	public SimpleTransform() {
 		spark = SessionCreator.getInstance().getSession();
 		ds = DatasetCreator.getInstance(spark).getDataset();
 	}
 
-	// probably not needed
-	public SimpleTransform(SparkSession spark, Dataset<Row> ds) {
-		this.spark = spark;
-		this.ds = ds;
-	}
+	
 	//Generate Adults,Children, Babies, number of specific combination of adult,children,and babies, and percentage of the combination of all booking.
 	public Dataset<Row> peopleVsBooking() {
 		Dataset<Row> result=spark.sql("SELECT adults as Adults,children as Children,babies as Babies,COUNT(*) as Total, ROUND(COUNT(*)*100/"
@@ -105,18 +101,26 @@ public class SimpleTransform {
 		return result;
 		
 	}
-// Not sure how to refactoring this method
-//	void monthlyAnalyses() {
-//		// monthly stuff
-//		ds.groupBy("arrival_date_month").agg(count(lit(1)).alias("count"), avg("adr"))
-//				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM"))).show(24);
-//		ds.groupBy("arrival_date_month", "hotel").agg(count(lit(1)).alias("count"), avg("adr"))
-//				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("hotel")).show(24);
-//		ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
-//				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled")).show(24);
-//	}
 
-	public Dataset<Row> writeMonthlyAnalyses() {
+	public Dataset<Row> monthlyAnalyses() {
+		// monthly stuff
+		Dataset<Row> result=ds.groupBy("arrival_date_month").agg(count(lit(1)).alias("count"), avg("adr"))
+				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")));
+			
+		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
+		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
+		return result;
+	}
+	public Dataset<Row> monthlyAnalysesOnHotel()
+	{
+		Dataset<Row> result=ds.groupBy("arrival_date_month", "hotel").agg(count(lit(1)).alias("count"), avg("adr"))
+		.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("hotel"));
+		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
+		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
+		return result;
+	}
+
+	public Dataset<Row> monthlyAnalysesOnIsCanceled() {
 		Dataset<Row> result=ds.groupBy("arrival_date_month", "is_canceled").agg(count(lit(1)).alias("count"), avg("adr"))
 				.sort(month(to_date(ds.col("arrival_date_month"), "MMMMM")), ds.col("is_canceled"));
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
@@ -124,7 +128,7 @@ public class SimpleTransform {
 		return result;
 	}
 
-	public Dataset<Row> cancellationAnalyses1() {
+	public Dataset<Row> cancellationAnalyses() {
 		// cancellation
 		Dataset<Row> result=ds.groupBy("is_canceled").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr"));
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
@@ -133,7 +137,7 @@ public class SimpleTransform {
 
 	}
 
-	public Dataset<Row> cancellationAnalyses2() {
+	public Dataset<Row> cancellationAnalysesOnHotel() {
 
 		Dataset<Row> result=ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr"));
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
@@ -195,20 +199,6 @@ public class SimpleTransform {
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
 	}
-
-	public Dataset<Row> writeCountReservedIsAssignedVSDay() {
-		// count of where room reserved was the room assigned based on day of month
-		// spark.sparkContext().hadoopConfiguration().set("mapreduce.fileoutputcommitter.algorithm.version",
-		// "2");
-		Dataset<Row> result=spark.sql("Select arrival_date_day_of_month, "
-				+ "Count(case when assigned_room_type == reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsAssigned, "
-				+ "Count(case when assigned_room_type <> reserved_room_type then arrival_date_day_of_month end) as CountWhereReservedIsNotAssigned "
-				+ "From bookings Group by arrival_date_day_of_month " + "Order By arrival_date_day_of_month ASC");
-		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
-		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
-		return result;
-	}
-
 	
 	void rename(String savePath, String name) {
 		try {
@@ -221,7 +211,7 @@ public class SimpleTransform {
 			e.printStackTrace();
 		}
 	}
-	@SuppressWarnings("deprecation")
+
 	public void checkDuplicate(String savePath,String name)
 	{
 		try
@@ -231,11 +221,16 @@ public class SimpleTransform {
 			String temp[]=dup.split(savePath);
 			if(temp[1].equals(name+".csv"))
 			{
-				fs.delete(new Path(dup));
+				fs.delete(new Path(dup),true);
+				System.out.println(name + ".csv found.\nOverwriting "+name+".csv");
 			}
 			
 		}
-		catch(NullPointerException| IOException | IllegalArgumentException | URISyntaxException e)
+		catch (NullPointerException e)
+		{
+			System.out.println("No "+name +".csv found.\nCreating "+name+".csv");
+		}
+		catch( IOException | IllegalArgumentException | URISyntaxException e)
 		{
 			System.err.println(e.getMessage());
 		}
