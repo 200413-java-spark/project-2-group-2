@@ -6,3 +6,8 @@ target/
 conf.xml
 db-service/bin/
 spark-job/bin/
+
+app.properties
+.metals/
+*.csv
+postgresql-42.2.12.jar
