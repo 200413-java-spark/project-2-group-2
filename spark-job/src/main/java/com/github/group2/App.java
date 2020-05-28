@@ -5,28 +5,27 @@ public class App {
 	public static void main(String[] args) {
 		SimpleTransform simple = new SimpleTransform();
 
-		simple.peopleVsBooking();
-		simple.countryVsRoom();
-		simple.countryVsAdr();
-		simple.countryVsRevenue();
-
-		simple.summarizeCountries();
-
-		simple.compareHotelTypeAndMonth();
-		simple.compareAvgLeadTimeOfHotelType();
+		simple.cancellationAnalyses();
+		simple.cancellationAnalysesOnHotel();
 		simple.compareAvgAdrOfRoomType();
 		simple.compareAvgAdrofHotel();
-
-		simple.writeMonthlyAnalyses();
-
-		simple.cancellationAnalyses1();
-		simple.cancellationAnalyses2();
-
+		simple.compareAvgLeadTimeOfHotelType();
+		simple.compareHotelTypeAndMonth();
 		simple.countRepeatedGuestVSHotel();
-		simple.countReservedIsAssignedVSRoomType();
-		simple.countReservedIsAssignedVSMonth();
-		simple.countReservedIsAssignedVSYear();
 		simple.countReservedIsAssignedVSDay();
+		simple.countReservedIsAssignedVSMonth();
+		simple.countReservedIsAssignedVSRoomType();
+		simple.countReservedIsAssignedVSYear();
+
+		simple.countryVsAdr();
+		simple.countryVsRevenue();
+		simple.countryVsRoom();
+		simple.monthlyAnalyses();
+		simple.monthlyAnalysesOnHotel();
+		simple.monthlyAnalysesOnIsCanceled();
+		simple.peopleVsBooking();
+		simple.summarizeCountries();
+		
 
 	}
 }
