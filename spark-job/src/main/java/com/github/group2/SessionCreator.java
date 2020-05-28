@@ -13,6 +13,7 @@ public class SessionCreator {
       spark = new SparkSession.Builder().appName("EZ APP").getOrCreate();
       spark.sparkContext().setLogLevel("WARN");
       spark.sparkContext().hadoopConfiguration().addResource("conf.xml");
+      spark.sparkContext().hadoopConfiguration().set("fs.s3.canned.acl", "PublicReadWrite");
     }
   }
 
