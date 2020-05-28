@@ -18,7 +18,7 @@ public class Server {
 
 	private static void startTomcat() {
 		Tomcat tomcat = new Tomcat();
-		tomcat.setPort(8080);
+		tomcat.setPort(8081);
 		tomcat.getConnector();
 		tomcat.setBaseDir(new File("target/tomcat/").getAbsolutePath());
 		tomcat.addWebapp("/group2", new File("src/main/resources/").getAbsolutePath());
