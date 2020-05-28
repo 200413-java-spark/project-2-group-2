@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class S3Transfer {
   RDSDataSource ds = RDSDataSource.getInstance();
   String bucketName = "revature-200413-project2-group2";
-  String prefix = "JeffsResults/";
+  String prefix = "Results/";
 
   public void transfer(String analysisAspect, String columns) {
     String useExt = "CREATE EXTENSION IF NOT EXISTS aws_s3 CASCADE";
