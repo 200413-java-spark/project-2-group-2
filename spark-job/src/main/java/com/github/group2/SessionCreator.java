@@ -1,6 +1,5 @@
 package com.github.group2;
 
-import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 
 public class SessionCreator {
@@ -11,7 +10,7 @@ public class SessionCreator {
   private SessionCreator() {
     // create SparkSession
     if (spark == null) {												   
-      spark = new SparkSession.Builder().appName("EZ APP").getOrCreate();
+      spark = new SparkSession.Builder().appName("EZ APP").master("local").getOrCreate();
       spark.sparkContext().setLogLevel("WARN");
       spark.sparkContext().hadoopConfiguration().addResource("conf.xml");
     }

@@ -13,6 +13,7 @@ public class DatasetCreator {
   }
 
   private DatasetCreator(SparkSession spark) {
+	  //create dataset
     if (ds == null) {
       ds = spark.read().option("inferSchema", true).option("header", true)
           .csv("s3a://revature-200413-project2-group2/hotel_bookings.csv").cache();
