@@ -12,7 +12,6 @@ import com.github.group2.io.SQLRepo;
 
 public class Server {
 	public static void main(String[] args) {
-
 		getProperties();
 		startTomcat();
 	}
@@ -25,7 +24,6 @@ public class Server {
 		tomcat.addWebapp("/group2", new File("src/main/resources/").getAbsolutePath());
 		tomcat.addServlet("/group2", "DisplayDatabaseServlet", new DisplayDatabaseServlet())
 				.addMapping("/DisplayDatabase");
-
 		try {
 			tomcat.start();
 			System.out.println("Server is running!");

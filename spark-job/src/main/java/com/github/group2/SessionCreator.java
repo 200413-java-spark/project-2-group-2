@@ -10,7 +10,7 @@ public class SessionCreator {
   private SessionCreator() {
     // create SparkSession
     if (spark == null) {												   
-      spark = new SparkSession.Builder().appName("EZ APP").master("local").getOrCreate();
+      spark = new SparkSession.Builder().appName("EZ APP").getOrCreate();
       spark.sparkContext().setLogLevel("WARN");
       spark.sparkContext().hadoopConfiguration().addResource("conf.xml");
     }

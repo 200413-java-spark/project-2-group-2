@@ -17,7 +17,6 @@ public class DisplayDatabaseServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
 		String value = req.getParameter("transformations");
 		SQLRepo sqlRepo = new SQLRepo();
 		System.out.println(req.getParameter("transformations") + " is being displayed");

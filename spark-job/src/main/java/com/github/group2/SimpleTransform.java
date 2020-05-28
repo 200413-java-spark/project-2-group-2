@@ -57,7 +57,6 @@ public class SimpleTransform {
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
-
 	}
 
 	public Dataset<Row> summarizeCountries() {
@@ -99,7 +98,6 @@ public class SimpleTransform {
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
-		
 	}
 
 	public Dataset<Row> monthlyAnalyses() {
@@ -111,6 +109,7 @@ public class SimpleTransform {
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
 	}
+	
 	public Dataset<Row> monthlyAnalysesOnHotel()
 	{
 		Dataset<Row> result=ds.groupBy("arrival_date_month", "hotel").agg(count(lit(1)).alias("count"), avg("adr"))
@@ -134,7 +133,6 @@ public class SimpleTransform {
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
-
 	}
 
 	public Dataset<Row> cancellationAnalysesOnHotel() {
@@ -237,6 +235,7 @@ public class SimpleTransform {
 		}
 		
 	}
+	
 	public void display_dataset(Dataset<Row> data,int num)
 	{
 		data.show(num);

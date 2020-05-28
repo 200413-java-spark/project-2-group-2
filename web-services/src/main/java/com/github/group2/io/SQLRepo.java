@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.github.group2.transfer.RDSDataSource;
-
 public class SQLRepo {
 
 	public ArrayList<ArrayList<String>> readAll(String tableName) {
