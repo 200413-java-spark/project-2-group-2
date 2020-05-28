@@ -20,7 +20,7 @@ public class DisplayDatabaseServlet extends HttpServlet{
 	
 		String value = req.getParameter("transformations");
 		SQLRepo sqlRepo = new SQLRepo();
-		System.out.println(req.getParameter("transformations") + "is being displayed");
+		System.out.println(req.getParameter("transformations") + " is being displayed");
 		ArrayList<ArrayList<String>> test = sqlRepo.readAll(value);
 		
 		PrintWriter out = resp.getWriter();
