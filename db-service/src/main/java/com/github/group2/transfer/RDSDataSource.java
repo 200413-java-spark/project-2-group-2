@@ -18,6 +18,7 @@ public class RDSDataSource {
 
   public static RDSDataSource getInstance() {
     if (instance == null) {
+    	
       instance = new RDSDataSource();
     }
     return instance;

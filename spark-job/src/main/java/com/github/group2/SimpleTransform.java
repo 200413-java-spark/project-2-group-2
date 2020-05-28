@@ -138,7 +138,7 @@ public class SimpleTransform {
 	}
 
 	public Dataset<Row> cancellationAnalysesOnHotel() {
-
+		// cancellation with hotel
 		Dataset<Row> result=ds.groupBy("is_canceled", "hotel").agg(count(lit(1)).alias("count"), avg("lead_time"), avg("adr"));
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -172,7 +172,8 @@ public class SimpleTransform {
 		Dataset<Row> result=spark.sql("Select arrival_date_month, "
 				+ "Count(case when assigned_room_type == reserved_room_type then arrival_date_month end) as CountWhereReservedIsAssigned, "
 				+ "Count(case when assigned_room_type <> reserved_room_type then arrival_date_month end) as CountWhereReservedIsNotAssigned "
-				+ "From bookings Group by arrival_date_month ");
+				+ "From bookings Group by arrival_date_month "
+				+ "Order By month(to_date(arrival_date_month, 'MMMM')) ASC");
 		result.coalesce(1).write().format("csv").option("header", true).mode("Append").save(this.savePath);
 		rename(this.savePath, Thread.currentThread().getStackTrace()[1].getMethodName());
 		return result;
