@@ -25,6 +25,7 @@ public class S3Transfer {
       stmt.execute(createSql);
       stmt.execute(transferSql);
       conn.commit();
+      System.out.println(analysisAspect + " table was created!");
     } catch (SQLException e) {
       e.printStackTrace();
     }

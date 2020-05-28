@@ -25,9 +25,12 @@ public class Server {
 		tomcat.addWebapp("/group2", new File("src/main/resources/").getAbsolutePath());
 		tomcat.addServlet("/group2", "DisplayDatabaseServlet", new DisplayDatabaseServlet())
 				.addMapping("/DisplayDatabase");
+
 		try {
 			tomcat.start();
+			System.out.println("Server is running!");
 		} catch (LifecycleException ex) {
+			System.out.println("Server run failed!");
 			System.err.println(ex.getMessage());
 		}
 	}
