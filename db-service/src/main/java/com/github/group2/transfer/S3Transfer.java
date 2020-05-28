@@ -16,7 +16,8 @@ public class S3Transfer {
     String createSql = "CREATE TABLE " + analysisAspect + " " + columns;
     String transferSql = "SELECT aws_s3.table_import_from_s3('" + analysisAspect
         + "', '', '(format csv, header true)', '" + bucketName + "', '" + prefix + analysisAspect
-        + ".csv', 'us-west-1')";
+        + ".csv', 'us-west-1', '" + System.getProperty("aws.accessKeyId") + "', '"
+        + System.getProperty("aws.secretAccessKey") + "')";
     try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
       conn.setAutoCommit(false);
       stmt.execute(useExt);
@@ -114,7 +115,8 @@ public class S3Transfer {
   }
 
   public void transferPeopleVsBooking() {
-    transfer("peopleVsBooking", "(Adults INTEGER, Children INTEGER, Babies INTEGER, Total INTEGER, Percentage DECIMAL)");
+    transfer("peopleVsBooking",
+        "(Adults INTEGER, Children INTEGER, Babies INTEGER, Total INTEGER, Percentage DECIMAL)");
   }
 
   public void transferSummarizeCountries() {
