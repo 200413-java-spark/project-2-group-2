@@ -2,8 +2,8 @@
 # $2 where jar is located
 
 if [ "$1" != "Usage" ]; then
-	scp -i $1 $2 hadoop@54.219.123.209:~
-	ssh -i $1 hadoop@54.219.123.209 spark-submit ./spark-job-1.0-SNAPSHOT.jar
+	scp -i $1 $2 hadoop@3.15.7.69:~
+	ssh -i $1 hadoop@3.15.7.69 spark-submit ./spark-job-1.0-SNAPSHOT.jar
 else
 	echo "Usage"
 	echo "./copyAndRunSparkJobJar.sh [pem file location] [jar location]"
