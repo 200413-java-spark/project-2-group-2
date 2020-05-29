@@ -8,7 +8,7 @@
 - Pejal Rath
 
 ### Introduction
-The main focus of this project is to get familiar with the data pipe line process. The project utilized AWS-EMR Cluster, AWS-S3 Bucket,AWS-RDS,Tomcat, Apache Spark, PostgresSQL, and HttpServlet. In AWS-S3 bucket, there is a CSV file that contains raw data related to hotel booking. 
+The main focus of this project is to get familiar with the data pipeline process. The project utilizes Java, AWS-EMR Cluster, AWS-S3 Bucket, AWS-RDS, Tomcat, Apache Spark, PostgresSQL, HttpServlet and HTML. In AWS-S3 bucket, there is a CSV file that contains raw data related to hotel booking. 
 
 ### Project Flow
 1. The program will load the CSV file from S3 bucket, perform Spark transformatons on the raw data and save it back to S3 bucket in CSV file format. The process of loading the CSV file from S3 will be handled by EMR instance. 
