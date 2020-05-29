@@ -1,5 +1,4 @@
 # Project 2
-
 ## Group 2
 ### Group Members
 - Jeffrey Magina
@@ -27,14 +26,14 @@ The main focus of this project is to get familiar with the data pipeline process
 #### Example 1: Copy Jar File To EMR Cluster And Perform Spark Transformation
 ##### Expected Input:
 > ./copyAndRunSparkJobJar.sh ~/.ssh/spark-demo.pem spark-job-1.0-SNAPSHOT.jar
-##### Expexted Output:
+##### Expected Output:
 ###### S3 Bucket
 ![Example 1](https://github.com/200413-java-spark/project-2-group-2/blob/Pejal/Pic/1.PNG?raw=true)
 
 #### Example 2: Build Table For Each CSV File And Save To Database
 ##### Expected Input:
 > ./sendFromS3toDB.sh
-##### Expexted Output:
+##### Expected Output:
 ![Exmaple 2](https://github.com/200413-java-spark/project-2-group-2/blob/Pejal/Pic/2.PNG?raw=true)
 
 #### Example 3: Host Tomcat Server For User Inquiry
@@ -43,14 +42,14 @@ The main focus of this project is to get familiar with the data pipeline process
 > ./runServer.sh
 ###### Web browser
 > http://localhost:8080/group2/project2.html
-##### Expexted Output:
+##### Expected Output:
 ![Example 3](https://github.com/200413-java-spark/project-2-group-2/blob/Pejal/Pic/3.PNG?raw=true)
 
 #### Example 4: User Inquiry "People Vs Booking"
 ##### Expected Input:
 ###### Web browser 
 ![Example 4 input](https://github.com/200413-java-spark/project-2-group-2/blob/Pejal/Pic/4.PNG?raw=true)
-##### Expexted Output:
+##### Expected Output:
 ![Example 4 output](https://github.com/200413-java-spark/project-2-group-2/blob/Pejal/Pic/5.PNG?raw=true)
 
 
