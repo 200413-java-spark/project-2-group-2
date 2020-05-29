@@ -18,7 +18,7 @@ The main focus of this project is to get familiar with the data pipeline process
 
 ### How To Save Each CSV File That Contained Processed Data In AWS RDS PostgreSQL Database
 > ./sendFromS3toDB.sh
-### How To Host Tomcat Server For User Inquairy
+### How To Host Tomcat Server For User Inquiry
 > ./runServer.sh
 
 ### Example Of How To Operate The Application
