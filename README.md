@@ -1,6 +1,5 @@
 # Project 2
-## Group 2
-### Group Members
+## Group 2 Members
 - Jeffrey Magina
 - Jay Patel
 - Jeremy Tran
